@@ -3,10 +3,10 @@ from savgol2d import savgol2d
 from edge_convolve import edge_convolve
 import random
 
-def houghTrans(dadx, dady, dx, noise = 0.01, deinterlace=False,
+def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
                sample=1):
    """
-   houghTrans performs a hough transformation.
+   voting performs a voting algorithm based on low-noise gradients.
    """
 
    # Get the shape of the image.
@@ -178,8 +178,8 @@ def circletransform(a_, theory='orientTrans', noise=None, mrange=0,
    if dodeinterlace : 
       dady /= 2.    
 
-   if theory == 'houghTrans':
-      return houghTrans(dadx, dady, dx, noise=0.1, 
+   if theory == 'voting':
+      return voting(dadx, dady, dx, noise=0.1, 
                         deinterlace=False, sample=0.8)
 
    if theory == 'orientTrans':
@@ -191,7 +191,7 @@ def test_circ():
    image = sph.spheredhm([100,0,100], 0.5, 1.5, 1.339, [641,481])
 
    # Circle transform the image.
-   circ = circletransform(image, theory='houghTrans')
+   circ = circletransform(image, theory='voting')
 
    import matplotlib.pyplot as plt
    plt.imshow(circ)
