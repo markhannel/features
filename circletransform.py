@@ -145,19 +145,11 @@ def circletransform(a_, theory='orientTrans', noise=None, mrange=0,
 
    umsg = 'USAGE: b = circletransform(a)'
 
-   if type(a_) != np.ndarray:
-      print umsg
-      print "a_ must be a numpy array"
-      return -1
 
    if a_.ndim != 2:
       print umsg
       print 'a_ must be a two-dimensional numeric array'
       return -1
-
-   sz = a_.shape
-   nx = sz[0]
-   ny = sz[1]
 
    if type(mrange) != int or type(mrange) != float: 
       mrange = 100
