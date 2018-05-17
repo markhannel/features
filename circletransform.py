@@ -2,6 +2,7 @@ import numpy as np
 from savgol2d import savgol2d
 from edge_convolve import edge_convolve
 import random
+from builtins import range
 
 def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
                sample=1):
@@ -41,7 +42,7 @@ def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
    costheta = dadx[w[0],w[1]] / grada
    sintheta = dady[w[0],w[1]] / grada
 
-   rng = map(round,2./np.tan(dgrada/2.))
+   rng = list(map(round,2./np.tan(dgrada/2.)))
    rng = np.array([ i if i < nx or i == -np.inf else nx for i in rng])
    mrange = int(max(rng))
    r = np.arange(2*mrange+1,dtype=float) - mrange
@@ -50,7 +51,7 @@ def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
    ny -= 1
 
    if sample != 1:
-      randInts = [random.randint(0,npts-1) for i in xrange(int(sample*npts))]
+      randInts = [random.randint(0,npts-1) for i in range(int(sample*npts))]
       xp = xp[randInts]
       yp = yp[randInts]
       rng = rng[randInts]
@@ -59,7 +60,7 @@ def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
 
    npts = int(sample*npts)
 
-   for i in xrange(npts):
+   for i in range(npts):
       start = int(mrange-rng[i])
       end = int(mrange+rng[i])
       rr = r[start:end]
@@ -71,7 +72,7 @@ def voting(dadx, dady, dx, noise = 0.01, deinterlace=False,
       y = [l if l > 0 else 0 for l in y]
       y = [m if m < ny else ny for m in y]
       
-      b[map(int,y),map(int,x)] += 1
+      b[list(map(int,y)),list(map(int,x))] += 1
 
    # borders are over-counted because of > and <
    b[0, :] = 0
@@ -145,11 +146,19 @@ def circletransform(a_, theory='orientTrans', noise=None, mrange=0,
 
    umsg = 'USAGE: b = circletransform(a)'
 
+   if type(a_) != np.ndarray:
+      print(umsg)
+      print("a_ must be a numpy array")
+      return -1
 
    if a_.ndim != 2:
-      print umsg
-      print 'a_ must be a two-dimensional numeric array'
+      print(umsg)
+      print('a_ must be a two-dimensional numeric array')
       return -1
+
+   sz = a_.shape
+   nx = sz[0]
+   ny = sz[1]
 
    if type(mrange) != int or type(mrange) != float: 
       mrange = 100
@@ -166,7 +175,7 @@ def circletransform(a_, theory='orientTrans', noise=None, mrange=0,
    dadx = -1 * edge_convolve(a, dx)       #FIXME:  Figure out why edge_convolve 
                                           #returns negative answer.
    dady = -1 * edge_convolve(a, np.transpose(dx))
-
+   
    if dodeinterlace : 
       dady /= 2.    
 
@@ -179,11 +188,11 @@ def circletransform(a_, theory='orientTrans', noise=None, mrange=0,
 
 def test_circ():
    # Generate hologram.
-   import spheredhm as sph
+   from lorenzmie.theory import spheredhm as sph
    image = sph.spheredhm([100,0,100], 0.5, 1.5, 1.339, [641,481])
 
    # Circle transform the image.
-   circ = circletransform(image, theory='voting')
+   circ = circletransform(image, theory='orientTrans')
 
    import matplotlib.pyplot as plt
    plt.imshow(circ)

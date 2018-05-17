@@ -25,13 +25,14 @@
 
 import numpy as nmp
 from scipy import ndimage
+from builtins import range
 
 def extend_array(a,n,m=0):
     """
     Creates a larger version of the array a by repeating the edges 
     """
     if type(a) != nmp.ndarray:
-        print 'a must be an numpy array'
+        print('a must be an numpy array')
         return -1
 
     new = nmp.empty([a.shape[0]+2*n,a.shape[1]+2*m])
@@ -49,11 +50,11 @@ def extend_array(a,n,m=0):
     left_side  = a[ :, 0]
     right_side = a[ :,-1]
     
-    for i in xrange(0,n):
+    for i in range(0,n):
         new[ i,m:-m] = top_side      #Repeat the top side of a
         new[-i-1,m:-m] = bot_side    #Repeat the bottom side of a
         
-    for j in xrange(0,m):
+    for j in range(0,m):
         new[n:-n, j]   = left_side   #Repeat the left side of a
         new[n:-n,-j-1] = right_side  #Repeat the right side of a
         new[ j,0:n]    = top_left    #Fill the top left corner
@@ -83,22 +84,22 @@ def edge_convolve(a,k):
         try: 
             a = nmp.array(a)
         except ValueError:
-            print 'a must be array-like'
+            print('a must be array-like')
             return -1
 
     if type(k) != nmp.ndarray:
         try: 
             k = nmp.array(k)
         except ValueError:
-            print 'k must be array-like'
+            print('k must be array-like')
             return -1
     
     if a.ndim != 2:
-        print 'a must be a 2D array of floats or ints'
+        print('a must be a 2D array of floats or ints')
         return -1
 
     if k.ndim != 2:
-        print 'k must be a 1D or 2D array of floats or ints'
+        print('k must be a 1D or 2D array of floats or ints')
         return -1
     
     a_x = a.shape[0]
@@ -108,7 +109,7 @@ def edge_convolve(a,k):
     k_y = k.shape[1]
 
     if a_x < k_x or a_y < k_y:
-        print 'k must have smaller dimensions than a'
+        print('k must have smaller dimensions than a')
         return -1
 
     #Extend the edges of a

@@ -62,44 +62,45 @@ def savgol2d(dim, order, dx = 0, dy = 0):
 #      return -1
 
    if type(dim) != int:
-      print umsg
-      print 'DIM should be the integer width of the filter'
+      print(umsg)
+      print('DIM should be the integer width of the filter')
       return -1
  
    if type(order) != int:
-      print umsg
-      print 'ORDER should be the integer order of the interpolaying polynomial'
+      print(umsg)
+      print('ORDER should be the integer order of the interpolaying polynomial')
       return -1
 
    if order > dim :
-      print umsg
-      print 'ORDER should be less than DIM'
+      print(umsg)
+      print('ORDER should be less than DIM')
       return -1
  
    if dx < 0 or dy < 0 or type(dx) != int or type(dy) != int:
-      print umsg
-      print 'DX and DY should be non-negative integers'
+      print(umsg)
+      print('DX and DY should be non-negative integers')
       return -1
 
    if dx + dy >= order:
-      print umsg
-      print 'DX + DY should not be greater than ORDER'
+      print(umsg)
+      print('DX + DY should not be greater than ORDER')
       return -1
 
    npts = dim**2
 
-   temparr = nmp.arange(0,dim,dtype=float)-dim/2
+   temparr = nmp.arange(0,dim,dtype=float)-dim/2.
 
    x = nmp.tile(temparr,dim)
    y = nmp.repeat(temparr,dim)
 
-   temp = (order+1)*(order+2)/2
+   temp = int( (order+1)*(order+2)/2 )
    Q = nmp.arange(temp*npts,dtype = float).reshape(npts,temp)
-   n = count(0)
+   n = 0
    for nu in range(0, order+1):
       ynu =  y**nu
       for mu in range(0, order-nu+1):
-         Q[:, n.next()] = x**mu * ynu
+         Q[:, n] = x**mu * ynu
+         n += 1
 
    a = nmp.linalg.inv(nmp.dot(Q.transpose(),Q))
    a = nmp.dot(Q,a).transpose()
