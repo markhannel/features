@@ -1,6 +1,6 @@
 import numpy as np
-from savgol2d import savgol2d
-from edge_convolve import edge_convolve
+from features.savgol2d import savgol2d
+from features.edge_convolve import edge_convolve
 import random
 from builtins import range
 
